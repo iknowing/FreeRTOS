@@ -9,7 +9,9 @@ del *.obj /s
 del *.omf /s
 ::del *.opt /s  ::不允许删除JLINK的设置
 del *.uvgui.* /s
+del *.uvguix.* /s
 del *.uvopt /s
+del *.uvoptx /s
 del *.dep /s
 del *.plg /s
 del *.rpt /s
