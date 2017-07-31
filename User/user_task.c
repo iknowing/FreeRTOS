@@ -61,6 +61,7 @@ static void vTaskUserShell(void *pvParameters)
 
 void vTaskCreat(void)
 {
+    semaphr_init();
     xTaskCreate(vTaskUserFunction,
                 "vTaskFunction",
                 64,
