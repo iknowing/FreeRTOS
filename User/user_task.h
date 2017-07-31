@@ -4,6 +4,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+void reset(void);
+
+
 void vTaskCreat(void);
 
 

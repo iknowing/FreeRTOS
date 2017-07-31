@@ -1,8 +1,27 @@
 #include "user_task.h"
 #include "stm32f10x.h"
+#include "semphr.h"
+#include "shell_uart.h"
 
-TaskHandle_t  xHandleTaskFunction = NULL;
-void vTaskFunction(void *pvParameters)
+
+
+void reset(void)
+{
+    NVIC_SystemReset();
+}
+
+SemaphoreHandle_t xSemaphorePrint = NULL;
+void semaphr_init()
+{
+    xSemaphorePrint = xSemaphoreCreateMutex();
+    if(xSemaphorePrint == NULL)
+    {
+        while(1);
+    }
+}
+
+TaskHandle_t  xHandleTaskUserFunction = NULL;
+void vTaskUserFunction(void *pvParameters)
 {
     TickType_t xBlockTime = pdMS_TO_TICKS(1000);
     
@@ -29,15 +48,30 @@ void vTaskFunction(void *pvParameters)
 
 //    vTaskDelete(NULL);  //must call vTaskDelete(NULL) when quit the task.
 }
-
+static TaskHandle_t xHandleTaskUserShell = NULL;
+static void vTaskUserShell(void *pvParameters)
+{
+    shell_uart_init();
+    while(1)
+    {
+        shell_uart_loop();
+        vTaskDelay(1000/portTICK_RATE_MS);
+    }
+}
 
 void vTaskCreat(void)
 {
-    xTaskCreate(vTaskFunction,
+    xTaskCreate(vTaskUserFunction,
                 "vTaskFunction",
                 64,
                 NULL,
                 5,
-                &xHandleTaskFunction);
+                &xHandleTaskUserFunction);
+    xTaskCreate(vTaskUserShell,
+                "vTaskUserShell",
+                1024,
+                NULL,
+                5,
+                &xHandleTaskUserShell);
 }
 
