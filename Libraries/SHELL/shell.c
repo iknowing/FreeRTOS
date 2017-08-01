@@ -34,6 +34,7 @@ extern void shell_str_getsystablefuncname(s16 num,u8 *fname);
 extern s16 shell_str_getparamvalue(s16 num,s32 *des);
 /*********************内部函数声明*********************************/
 void shell_cmd_exe(u8 *cmdstr);
+void printf_err(u16 err);
 
 /********************************************************
  *函数名：shell_rec
@@ -156,20 +157,17 @@ s16 shell_sys_cmd_exe(void)
 	err=shell_find_sys_cmd_code(uc_shellCmdName);
 	switch(err)
 	{
-	/*case -1:
-		return (-1);
-		break;*/
-	case 0:
-		(void)(*(u32(*)())shell_sys_table[0].func)();//?
-		break;
-	case 1:
-		(void)(*(u32(*)())shell_sys_table[1].func)();//list
-		break;
-	case 2:
-		(void)(*(u32(*)(u8 *))shell_sys_table[2].func)(uc_shellCmdParamName[0]);//help funcname
-		break;
-	default:
-		break;
+        case 0:
+            (void)(*(u32(*)())shell_sys_table[0].func)();//?
+            break;
+        case 1:
+            (void)(*(u32(*)())shell_sys_table[1].func)();//list
+            break;
+        case 2:
+            (void)(*(u32(*)(u8 *))shell_sys_table[2].func)(uc_shellCmdParamName[0]);//help funcname
+            break;
+        default:
+            break;
 	}
 	return (err);
 }
@@ -178,27 +176,27 @@ void shell_cmd_exe(u8 *cmdstr)
 {
 	s16 err;
 	s32 des[10]={0};
-	u32 ret=0;
+	u16 ret=0;
 	err = shell_str_funcandparam(cmdstr);
 	uc_shellCmdParamNum=err;
-	if(shell_sys_cmd_exe()==0)
+	if(shell_sys_cmd_exe()!=-1)
 	{
 		return ;//系统指令，执行结束
 	}
 	if((uc_shellCmdNum=shell_find_cmd_code(uc_shellCmdName))==-1)
 	{
+        printsh("\r\nError0xF001:The cmd %s unsupported.\r\n",cmdstr);
 		return ;
 	}
 	if(shell_str_getparamvalue(uc_shellCmdParamNum,des)==-1)
 	{
-#ifdef SHELL_DEBUG
-		printp("参数解析出错");
-#endif
+		printsh("\r\nError0xF002:The parameter analysis error.\r\n");
 		return ;
 	}
 	switch(err)
 	{
 	case -1://错误指令
+        printsh("\r\nError0xF003:The command analysis error.\r\n");
 		break;
 	case 0:
 		ret=(*(u32(*)())shell_table[uc_shellCmdNum].func)();
@@ -237,8 +235,28 @@ void shell_cmd_exe(u8 *cmdstr)
 		break;
 	}
 	
-	if((shell_table[uc_shellCmdNum].cmdhasreturn != 0) && (ret != 0))
-		printsh("\r\nError0x%08x:\r\n",ret);
+	if((shell_table[uc_shellCmdNum].cmdhasreturn != 0))// && (ret != 0))
+		//printsh("\r\nError0x%08x:\r\n",ret);
+        printf_err(ret);
+}
+
+void printf_err(u16 err)
+{
+    if(0 == err)
+    {
+        printsh("\r\nExecute successfully.\r\n");
+        return ;
+    }
+    printsh("\r\nError0x%04x:",err);
+    switch(err)
+    {
+        case 1:
+            break;
+        default:
+            printsh("Unknown error.\r\n");
+            break;
+    }
+    
 }
 
 

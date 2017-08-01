@@ -1,6 +1,5 @@
 #include "shell.h"
 
-//#define SHELL_DEBUG
 
 extern u8 uc_shellCmdName[SHELLCMDSTRMAX];
 extern s16 uc_shellCmdNum;//指令的列表号
@@ -511,7 +510,7 @@ void shell_str_listsys(void)
 {
 	s16 i;
 
-	printsh("\r\n注意:字符串内容请用\"括起来.\r\n");
+	printsh("\r\n注意:字符串内容请用\"\"括起来.\r\n");
 	for(i=0;i<shell_sys_table_length;i++)
 	{
 		printsh("#%d:%s",i+1,shell_sys_table[i].cmdhelp);
@@ -527,7 +526,7 @@ void shell_str_list(void)
 {
 	s16 i;
 
-	printsh("\r\n注意:字符串内容请用\"括起来.\r\n");
+	printsh("\r\n注意:字符串内容请用\"\"括起来.\r\n");
 	for(i=0;i<shell_table_length;i++)
 	{
 		printsh("#%d:%s",i+1,shell_table[i].cmdhelp);
