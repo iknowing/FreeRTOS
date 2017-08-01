@@ -2,6 +2,7 @@
 #include "stm32f10x.h"
 #include "semphr.h"
 #include "shell_uart.h"
+#include "user_test.h"
 
 
 
@@ -44,6 +45,7 @@ void vTaskUserFunction(void *pvParameters)
         {
             GPIO_SetBits(GPIOA,GPIO_Pin_1);
         }
+        user_test_cJson();
     }
 
 //    vTaskDelete(NULL);  //must call vTaskDelete(NULL) when quit the task.
@@ -55,7 +57,7 @@ static void vTaskUserShell(void *pvParameters)
     while(1)
     {
         shell_uart_loop();
-        vTaskDelay(1000/portTICK_RATE_MS);
+        vTaskDelay(100/portTICK_RATE_MS);
     }
 }
 

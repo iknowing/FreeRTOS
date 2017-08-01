@@ -539,6 +539,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\user_task.c</FilePath>
             </File>
+            <File>
+              <FileName>user_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\user_test.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
