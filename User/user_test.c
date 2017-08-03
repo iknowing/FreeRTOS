@@ -3,17 +3,20 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "shell.h"
+#include "FreeRTOS.h"
 
 
 
 
 
 int user_test_cJson(void)
-{
+{ 
+     static int count = 0;
+     printsh("********cJSON test count:%lu*********\r\n",++count);
+     
      cJSON* pRoot = cJSON_CreateObject();
      cJSON* pArray = cJSON_CreateArray();
      cJSON_AddItemToObject(pRoot, "students_info", pArray);
-     char* szOut = cJSON_Print(pRoot);
 
      cJSON* pItem = cJSON_CreateObject();
      cJSON_AddStringToObject(pItem, "name", "chenzhongjing");
@@ -33,11 +36,17 @@ int user_test_cJson(void)
      cJSON_AddNumberToObject(pItem, "age", 22);
      cJSON_AddItemToArray(pArray, pItem);
 
-     char* szJSON = cJSON_Print(pRoot);
+     char *szJSON = cJSON_Print(pRoot);
      cJSON_Delete(pRoot);
-     //free(szJSON);
-     printsh("%s",szJSON);
      
+     if(szJSON != NULL)
+     {
+         printsh("%s\r\n",szJSON);
+     }
+     else
+     {
+         printsh("Memory allocation failure.\r\n");
+     }     
      
      pRoot = cJSON_Parse(szJSON);
      pArray = cJSON_GetObjectItem(pRoot, "students_info");
@@ -55,9 +64,11 @@ int user_test_cJson(void)
              continue;
          }
 
-         char *strName = cJSON_GetObjectItem(pItem, "name")->valuestring;
+         char *strName = cJSON_GetObjectItem(pItem, "name")->valuestring;         
          char *strSex = cJSON_GetObjectItem(pItem, "sex")->valuestring;
          int iAge = cJSON_GetObjectItem(pItem, "age")->valueint;
+         
+         printsh("name:%s\r\nsex:%s\r\nage:%lu\r\n\r\n",strName,strSex,iAge);
      }
 
      cJSON_Delete(pRoot);

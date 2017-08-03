@@ -66,7 +66,7 @@ void vTaskCreat(void)
     semaphr_init();
     xTaskCreate(vTaskUserFunction,
                 "vTaskFunction",
-                64,
+                1024,
                 NULL,
                 5,
                 &xHandleTaskUserFunction);
