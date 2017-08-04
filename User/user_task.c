@@ -3,6 +3,7 @@
 #include "semphr.h"
 #include "shell_uart.h"
 #include "user_test.h"
+#include "mmc_sd.h"
 
 
 
@@ -40,12 +41,13 @@ void vTaskUserFunction(void *pvParameters)
         if(GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_1))
         {
             GPIO_ResetBits(GPIOA,GPIO_Pin_1);
+            user_test_cJson();
         }
         else
         {
             GPIO_SetBits(GPIOA,GPIO_Pin_1);
+            SD_Test();
         }
-        user_test_cJson();
     }
 
 //    vTaskDelete(NULL);  //must call vTaskDelete(NULL) when quit the task.
