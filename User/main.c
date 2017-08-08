@@ -1,6 +1,7 @@
 #include "stm32f10x.h"
 #include <stdio.h>
 #include "user_task.h"
+#include "user_test.h"
 
 ErrorStatus HSEStartUpStatus;
 void RCC_Configuration(void);
@@ -23,6 +24,7 @@ int main(void)
 /*
  *  Hardware self-inspection
 */ 
+    hardware_test_self();
 
 /*Creat tasks and enable scheduler*/    
     vTaskCreat();

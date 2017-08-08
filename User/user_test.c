@@ -4,9 +4,19 @@
 #include "stdlib.h"
 #include "shell.h"
 #include "FreeRTOS.h"
+#include "mmc_sd.h"
 
+//#define HARDWARE_TEST_SELF 
 
-
+void hardware_test_self(void)
+#ifdef HARDWARE_TEST_SELF
+{
+    SD_Test();
+    while(1);
+}
+#else
+{/**/}
+#endif
 
 
 int user_test_cJson(void)
@@ -36,7 +46,8 @@ int user_test_cJson(void)
      cJSON_AddNumberToObject(pItem, "age", 22);
      cJSON_AddItemToArray(pArray, pItem);
 
-     char *szJSON = cJSON_Print(pRoot);
+//     char *szJSON = cJSON_Print(pRoot);
+     char *szJSON = cJSON_PrintUnformatted(pRoot);
      cJSON_Delete(pRoot);
      
      if(szJSON != NULL)
